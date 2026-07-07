@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方向5：场景拓展 — 单点验证到行业解决方案矩阵</title>
+<style>
+  :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff; --teal: #39d353; --green: #3fb950; --orange: #f0883e; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); line-height: 1.75; min-height: 100vh; }
+  .page { max-width: 920px; margin: 0 auto; padding: 24px 24px 80px; }
+  .nav-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--teal); text-decoration: none; font-size: 14px; }
+  .back-link:hover { text-decoration: underline; }
+  .breadcrumb { color: var(--text-dim); font-size: 14px; }
+  .breadcrumb span { color: var(--text); }
+  .section { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 28px 30px; margin-bottom: 20px; }
+  .section-title { font-size: 18px; font-weight: 600; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border); color: var(--teal); }
+  .section p { font-size: 14px; margin-bottom: 12px; }
+  .section ul { list-style: none; padding-left: 0; margin-bottom: 12px; }
+  .section ul li { font-size: 14px; padding: 5px 0 5px 20px; position: relative; }
+  .section ul li::before { content: "▸"; position: absolute; left: 0; color: var(--teal); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { background: rgba(57,211,83,0.06); color: var(--teal); font-weight: 600; font-size: 12px; }
+  .highlight { background: rgba(57,211,83,0.06); border-left: 3px solid var(--teal); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 12px 0; font-size: 14px; }
+  .highlight strong { color: var(--teal); }
+  h3 { font-size: 15px; font-weight: 600; color: var(--text); margin: 16px 0 8px; }
+
+  .roadmap { display: flex; gap: 0; margin: 20px 0; overflow-x: auto; padding-bottom: 8px; }
+  .roadmap-phase { flex: 1; min-width: 180px; text-align: center; padding: 20px 16px; border-right: 1px solid var(--border); position: relative; }
+  .roadmap-phase:last-child { border-right: none; }
+  .roadmap-phase .phase-num { font-size: 13px; font-weight: 700; color: var(--teal); }
+  .roadmap-phase .phase-time { font-size: 11px; color: var(--text-dim); margin: 4px 0; }
+  .roadmap-phase .phase-desc { font-size: 12px; color: var(--text); margin-top: 8px; }
+  .phase-bar { height: 3px; border-radius: 2px; }
+  .phase-bar.c1 { background: var(--teal); }
+  .phase-bar.c2 { background: var(--teal); opacity: 0.7; }
+  .phase-bar.c3 { background: var(--teal); opacity: 0.5; }
+  .phase-bar.c4 { background: var(--teal); opacity: 0.3; }
+
+  .asset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 16px 0; }
+  .asset-card { background: rgba(57,211,83,0.04); border: 1px solid rgba(57,211,83,0.12); border-radius: 10px; padding: 16px; }
+  .asset-card .asset-layer { font-size: 12px; font-weight: 600; color: var(--teal); margin-bottom: 8px; letter-spacing: 0.5px; }
+  .asset-card .asset-item { font-size: 12px; color: var(--text-dim); padding: 3px 0; }
+  .asset-card .asset-item::before { content: "├ "; color: var(--teal); opacity: 0.5; }
+  .asset-card .asset-item:last-child::before { content: "└ "; }
+  .reuse-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: rgba(57,211,83,0.1); color: var(--teal); display: inline-block; margin-left: 6px; }
+
+  @media (max-width: 768px) { .asset-grid { grid-template-columns: 1fr; } .roadmap { flex-direction: column; } .roadmap-phase { border-right: none; border-bottom: 1px solid var(--border); } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="nav-bar">
+    <a class="back-link" href="index.html">← 返回主页</a>
+    <div class="breadcrumb">/ <span>方向5：场景拓展</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">论文现状</div>
+    <ul>
+      <li>单一场景：LEO轨道电子通量预测</li>
+      <li>单一输出：4能量通道×2投掷角的通量值</li>
+      <li>单一用户：研究人员（无明确商业用户）</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">深化方案一：行业解决方案矩阵</div>
+    <table>
+      <thead><tr><th>场景</th><th>用户</th><th>AI输出</th><th>商业价值</th><th>复用</th></tr></thead>
+      <tbody>
+        <tr><td>电子通量预测</td><td>卫星运营商</td><td>4×2通道通量预测</td><td>载荷保护决策</td><td><span class="reuse-badge">全部复用</span></td></tr>
+        <tr><td>表面充电风险评估</td><td>卫星设计方</td><td>表面电位预测</td><td>屏蔽层优化设计</td><td><span class="reuse-badge">通量预测模块</span></td></tr>
+        <tr><td>单粒子翻转概率</td><td>卫星运维方</td><td>SEU率估算</td><td>冗余配置决策</td><td><span class="reuse-badge">数据Pipeline</span></td></tr>
+        <tr><td>轨道衰减预警</td><td>星座管理方</td><td>轨道衰减速率</td><td>补燃燃料规划</td><td><span class="reuse-badge">地磁指数模块</span></td></tr>
+        <tr><td>星座风险编排</td><td>星座运营方</td><td>全星座风险热力图</td><td>运维优先级排序</td><td><span class="reuse-badge">模型+Pipeline</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">深化方案二：可复用资产拆解</div>
+    <div class="asset-grid">
+      <div class="asset-card">
+        <div class="asset-layer">数据层 (可复用)</div>
+        <div class="asset-item">多源卫星数据采集模块</div>
+        <div class="asset-item">时间对齐与缺失值处理</div>
+        <div class="asset-item">时滞特征工程框架</div>
+        <div class="asset-item">MinMaxScaler归一化方案</div>
+      </div>
+      <div class="asset-card">
+        <div class="asset-layer">模型层 (可复用)</div>
+        <div class="asset-item">ANN架构搜索框架 (11种)</div>
+        <div class="asset-item">训练Pipeline (MSE+Adam)</div>
+        <div class="asset-item">消融实验框架</div>
+        <div class="asset-item">性能-成本帕累托前沿</div>
+      </div>
+      <div class="asset-card">
+        <div class="asset-layer">验证层 (可复用)</div>
+        <div class="asset-item">磁暴事件端到端测试法</div>
+        <div class="asset-item">静默期/磁暴期分段评估</div>
+        <div class="asset-item">L壳值分段验证策略</div>
+        <div class="asset-item">预测误差分布统计方法</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);">
+      每场景复用 80% 数据层和模型层资产，仅替换输出层和领域模型
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">深化方案三：场景拓展路线图</div>
+    <div class="roadmap">
+      <div class="roadmap-phase">
+        <div class="phase-bar c1"></div>
+        <div class="phase-num">Phase 1</div>
+        <div class="phase-time">已完成</div>
+        <div class="phase-desc">LEO电子通量预测<br>论文全文验证</div>
+      </div>
+      <div class="roadmap-phase">
+        <div class="phase-bar c2"></div>
+        <div class="phase-num">Phase 2</div>
+        <div class="phase-time">3个月</div>
+        <div class="phase-desc">风险等级映射<br>+ 预警推送 Demo</div>
+      </div>
+      <div class="roadmap-phase">
+        <div class="phase-bar c3"></div>
+        <div class="phase-num">Phase 3</div>
+        <div class="phase-time">6个月</div>
+        <div class="phase-desc">集成表面充电模型<br>卫星设计方验证</div>
+      </div>
+      <div class="roadmap-phase">
+        <div class="phase-bar c4"></div>
+        <div class="phase-num">Phase 4</div>
+        <div class="phase-time">12个月</div>
+        <div class="phase-desc">星座级风险编排<br>多场景解决方案</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">对标岗位能力</div>
+    <table>
+      <thead><tr><th>岗位要求</th><th>本方向的体现</th></tr></thead>
+      <tbody>
+        <tr><td>场景洞察</td><td>从单一预测到多场景解决方案矩阵</td></tr>
+        <tr><td>可复用方案沉淀</td><td>将验证过的场景拆解为可复用资产</td></tr>
+        <tr><td>垂直场景识别</td><td>区分"真正值得付费的问题"和"技术展示"</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">简历话术</div>
+    <div class="highlight">
+      将单一电子通量预测场景拓展为行业解决方案矩阵：以论文中已验证的多源卫星数据Pipeline、ANN架构搜索框架、消融实验方法论为核心可复用资产，横向拓展5个垂直场景（通量预测→表面充电→单粒子翻转→轨道衰减→星座风险编排），每个场景复用80%数据层和模型层资产，仅替换输出层和领域模型。设计3阶段路线图（单点验证→多场景Demo→星座级方案），形成可复用的空间天气AI预警行业解决方案。
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

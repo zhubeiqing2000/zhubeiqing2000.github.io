@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方向3：工程化 — 离线研究到实时Pipeline</title>
+<style>
+  :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff; --green: #3fb950; --orange: #f0883e; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); line-height: 1.75; min-height: 100vh; }
+  .page { max-width: 920px; margin: 0 auto; padding: 24px 24px 80px; }
+  .nav-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--orange); text-decoration: none; font-size: 14px; }
+  .back-link:hover { text-decoration: underline; }
+  .breadcrumb { color: var(--text-dim); font-size: 14px; }
+  .breadcrumb span { color: var(--text); }
+  .section { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 28px 30px; margin-bottom: 20px; }
+  .section-title { font-size: 18px; font-weight: 600; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border); color: var(--orange); }
+  .section p { font-size: 14px; margin-bottom: 12px; }
+  .section ul { list-style: none; padding-left: 0; margin-bottom: 12px; }
+  .section ul li { font-size: 14px; padding: 5px 0 5px 20px; position: relative; }
+  .section ul li::before { content: "▸"; position: absolute; left: 0; color: var(--orange); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { background: rgba(240,136,62,0.06); color: var(--orange); font-weight: 600; font-size: 12px; }
+  .highlight { background: rgba(240,136,62,0.06); border-left: 3px solid var(--orange); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 12px 0; font-size: 14px; }
+  .highlight strong { color: var(--orange); }
+  h3 { font-size: 15px; font-weight: 600; color: var(--text); margin: 16px 0 8px; }
+
+  .pipeline-box { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 8px 0; margin: 16px 0; }
+  .pipeline-layer { padding: 14px 20px; border-bottom: 1px solid var(--border); }
+  .pipeline-layer:last-child { border-bottom: none; }
+  .pipeline-layer .layer-label { font-size: 12px; font-weight: 600; color: var(--orange); margin-bottom: 6px; letter-spacing: 0.5px; }
+  .pipeline-layer .layer-content { font-size: 13px; color: var(--text-dim); display: flex; flex-wrap: wrap; gap: 8px; }
+  .layer-tag { font-size: 11px; padding: 3px 10px; border-radius: 6px; border: 1px solid rgba(240,136,62,0.2); background: rgba(240,136,62,0.06); color: var(--text); }
+  .layer-arrow { color: var(--orange); font-size: 11px; }
+
+  .tech-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; margin: 12px 0; }
+  .tech-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 13px; }
+  .tech-item .tech-name { color: var(--orange); font-weight: 600; }
+  .check-tag { color: var(--green); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="nav-bar">
+    <a class="back-link" href="index.html">← 返回主页</a>
+    <div class="breadcrumb">/ <span>方向3：工程化</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">论文现状</div>
+    <ul>
+      <li>数据：2013-2019年NOAA POES+MetOp-A历史数据（静态文件）</li>
+      <li>处理：Python批量脚本，离线处理</li>
+      <li>推理：模型训练后手动评估，无在线推理</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">深化方案：四层实时数据Pipeline架构</div>
+
+    <div class="pipeline-box">
+      <div class="pipeline-layer">
+        <div class="layer-label">[ 数据源层 ]</div>
+        <div class="layer-content">
+          <span class="layer-tag">NOAA SWPC API (实时太阳风)</span>
+          <span class="layer-tag">OMNI数据集 (地磁指数)</span>
+          <span class="layer-tag">张衡一号/澳门科学一号</span>
+          <span class="layer-arrow">→ 数据采集服务 (定时拉取/流式订阅)</span>
+        </div>
+      </div>
+      <div class="pipeline-layer">
+        <div class="layer-label">[ 数据处理层 ]</div>
+        <div class="layer-content">
+          <span class="layer-arrow">原始数据 →</span>
+          <span class="layer-tag">时间对齐 (60min窗口)</span>
+          <span class="layer-arrow">→</span>
+          <span class="layer-tag">缺失值插值</span>
+          <span class="layer-arrow">→</span>
+          <span class="layer-tag">去重</span>
+        </div>
+        <div class="layer-content" style="margin-top:6px;">
+          <span class="layer-arrow">→</span>
+          <span class="layer-tag">时滞特征工程 (120min-12h滚动窗口)</span>
+          <span class="layer-arrow">→</span>
+          <span class="layer-tag">MinMaxScaler 归一化</span>
+          <span class="layer-arrow">→</span>
+          <span class="layer-tag">特征向量 (293维)</span>
+        </div>
+      </div>
+      <div class="pipeline-layer">
+        <div class="layer-label">[ 模型推理层 ]</div>
+        <div class="layer-content">
+          <span class="layer-arrow">特征向量 →</span>
+          <span class="layer-tag">ANN 模型在线推理</span>
+          <span class="layer-arrow">→</span>
+          <span class="layer-tag">4通道×2角度通量预测</span>
+        </div>
+        <div class="layer-content" style="margin-top:6px;">
+          <span class="layer-tag">模型版本管理 (A/B测试)</span>
+          <span class="layer-tag">置信度估计</span>
+        </div>
+      </div>
+      <div class="pipeline-layer">
+        <div class="layer-label">[ 应用服务层 ]</div>
+        <div class="layer-content">
+          <span class="layer-arrow">预测结果 →</span>
+          <span class="layer-tag">风险等级判定</span>
+          <span class="layer-arrow">→</span>
+          <span class="layer-tag">预警规则引擎</span>
+        </div>
+        <div class="layer-content" style="margin-top:6px;">
+          <span class="layer-tag">WebSocket 实时推送</span>
+          <span class="layer-tag">历史数据存储</span>
+          <span class="layer-tag">可视化 Dashboard</span>
+          <span class="layer-tag">API 开放接口</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">关键技术决策</div>
+    <div class="tech-list">
+      <div class="tech-item"><span class="tech-name">数据采集：</span>REST API轮询（5分钟间隔）+ 异常重试机制</div>
+      <div class="tech-item"><span class="tech-name">特征工程：</span>复用论文293维特征向量设计 + 在线滑窗计算</div>
+      <div class="tech-item"><span class="tech-name">模型服务：</span>Flask + TorchServe，支持批量推理和热更新</div>
+      <div class="tech-item"><span class="tech-name">存储：</span>InfluxDB（时序数据）+ PostgreSQL（预警记录）</div>
+      <div class="tech-item"><span class="tech-name">前端：</span>React Dashboard，实时通量曲线 + 风险等级地图</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Demo 可验证要素</div>
+    <table>
+      <thead><tr><th>要素</th><th>具体要求</th></tr></thead>
+      <tbody>
+        <tr><td>真实输入</td><td>NOAA实时太阳风数据（非模拟）</td></tr>
+        <tr><td>真实输出</td><td>4×2通道电子通量预测值 + 风险等级</td></tr>
+        <tr><td>真实流程</td><td>数据采集→推理→预警→推送 全链路自动化</td></tr>
+        <tr><td>可验证结果</td><td>历史磁暴事件回放 + 实时预警触发</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">对标岗位能力</div>
+    <table>
+      <thead><tr><th>岗位要求</th><th>本方向的体现</th></tr></thead>
+      <tbody>
+        <tr><td>Demo能不能跑</td><td>有真实输入输出、真实业务流程和可验证结果</td></tr>
+        <tr><td>0-1产品方案设计</td><td>从离线研究到在线服务的完整工程方案</td></tr>
+        <tr><td>AI工具使用</td><td>API集成、模型服务化、自动化流程</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">简历话术</div>
+    <div class="highlight">
+      设计实时空间天气预警数据Pipeline：数据采集服务定时拉取NOAA SWPC实时太阳风API，流式处理模块完成时间对齐、缺失值插值、293维时滞特征工程（复用论文设计），ANN模型通过TorchServe在线推理输出4×2通道通量预测，风险判定引擎基于阈值规则输出四级预警，通过WebSocket实时推送至运营商Dashboard。端到端延迟&lt;5秒，支持历史磁暴事件回放验证和实时预警触发，形成可演示的完整Demo。
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方向4：可信AI — 消融实验到决策解释框架</title>
+<style>
+  :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff; --purple: #a371f7; --green: #3fb950; --orange: #f0883e; --red: #f85149; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); line-height: 1.75; min-height: 100vh; }
+  .page { max-width: 920px; margin: 0 auto; padding: 24px 24px 80px; }
+  .nav-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--purple); text-decoration: none; font-size: 14px; }
+  .back-link:hover { text-decoration: underline; }
+  .breadcrumb { color: var(--text-dim); font-size: 14px; }
+  .breadcrumb span { color: var(--text); }
+  .section { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 28px 30px; margin-bottom: 20px; }
+  .section-title { font-size: 18px; font-weight: 600; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border); color: var(--purple); }
+  .section p { font-size: 14px; margin-bottom: 12px; }
+  .section ul { list-style: none; padding-left: 0; margin-bottom: 12px; }
+  .section ul li { font-size: 14px; padding: 5px 0 5px 20px; position: relative; }
+  .section ul li::before { content: "▸"; position: absolute; left: 0; color: var(--purple); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { background: rgba(161,113,247,0.06); color: var(--purple); font-weight: 600; font-size: 12px; }
+  .highlight { background: rgba(161,113,247,0.06); border-left: 3px solid var(--purple); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 12px 0; font-size: 14px; }
+  .highlight strong { color: var(--purple); }
+  h3 { font-size: 15px; font-weight: 600; color: var(--text); margin: 16px 0 8px; }
+
+  .feature-bar { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin: 16px 0; }
+  .feature-row { display: flex; align-items: center; margin-bottom: 10px; }
+  .feature-row:last-child { margin-bottom: 0; }
+  .feature-label { width: 140px; font-size: 12px; color: var(--text-dim); flex-shrink: 0; }
+  .feature-fill { height: 20px; border-radius: 4px; margin-right: 10px; }
+  .feature-value { font-size: 12px; color: var(--text); white-space: nowrap; flex-shrink: 0; }
+  .f1 { background: var(--purple); }
+  .f2 { background: var(--accent); }
+  .f3 { background: var(--red); }
+  .f4 { background: var(--orange); }
+  .f5 { background: var(--green); }
+
+  .boundary-box { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; margin: 12px 0; }
+  .boundary-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+  .boundary-row:last-child { margin-bottom: 0; }
+  .bd-icon { width: 20px; text-align: center; flex-shrink: 0; font-weight: 700; }
+  .bd-high { color: var(--green); }
+  .bd-mid { color: var(--orange); }
+  .bd-low { color: var(--red); }
+  .bd-na { color: var(--text-dim); }
+  .confidence-tag { font-size: 10px; padding: 1px 6px; border-radius: 4px; margin-left: 6px; }
+  .ct-high { background: rgba(63,185,80,0.15); color: var(--green); }
+  .ct-mid { background: rgba(240,136,62,0.15); color: var(--orange); }
+  .ct-low { background: rgba(248,81,73,0.15); color: var(--red); }
+
+  .audience-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 16px 0; }
+  .audience-card { background: rgba(161,113,247,0.04); border: 1px solid rgba(161,113,247,0.12); border-radius: 10px; padding: 16px; }
+  .audience-card .aud-name { font-size: 14px; font-weight: 600; color: var(--purple); }
+  .audience-card .aud-question { font-size: 12px; color: var(--text-dim); font-style: italic; margin: 4px 0; }
+  .audience-card .aud-answer { font-size: 12px; color: var(--text); margin-top: 6px; }
+  @media (max-width: 600px) { .audience-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="nav-bar">
+    <a class="back-link" href="index.html">← 返回主页</a>
+    <div class="breadcrumb">/ <span>方向4：可信AI</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">论文现状</div>
+    <ul>
+      <li>消融实验：验证了L-shell、MLT、AL、Dst各自对预测的贡献</li>
+      <li>能力边界：静默期98.2% vs 磁暴期91.3%，612keV@0°在L&gt;5.5后R骤降</li>
+      <li>表达方式：学术图表和统计指标</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">深化方案一：面向不同受众的可解释层</div>
+    <div class="audience-grid">
+      <div class="audience-card">
+        <div class="aud-name">卫星运营商调度员</div>
+        <div class="aud-question">"现在该不该切换安全模式？"</div>
+        <div class="aud-answer">风险等级 + 置信度 + 建议操作<br>预测通量 → 阈值 → 操作建议</div>
+      </div>
+      <div class="audience-card">
+        <div class="aud-name">保险公司精算师</div>
+        <div class="aud-question">"这个预警可信度多高？"</div>
+        <div class="aud-answer">预测误差分布 + 历史准确率<br>98.58%&lt;1数量级, R=0.82-0.92</div>
+      </div>
+      <div class="audience-card">
+        <div class="aud-name">空间物理专家</div>
+        <div class="aud-question">"模型为什么这么预测？"</div>
+        <div class="aud-answer">特征重要性 + 消融贡献分析<br>L-shell贡献15%, MLT贡献9%</div>
+      </div>
+      <div class="audience-card">
+        <div class="aud-name">监管机构</div>
+        <div class="aud-question">"模型在什么条件下不可靠？"</div>
+        <div class="aud-answer">能力边界声明 + 触发条件<br>磁暴期精度下降7%, 高能低角度失效</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">深化方案二：特征贡献可视化框架</div>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:8px;">预测输出：40keV@90° 通量 = 10<sup>4.2</sup> cm<sup>-2</sup>&middot;s<sup>-1</sup>&middot;sr<sup>-1</sup>&middot;keV<sup>-1</sup></p>
+    <div class="feature-bar">
+      <div class="feature-row"><span class="feature-label">L-shell = 4.5</span><div class="feature-fill f1" style="width:256px;"></div><span class="feature-value">32% 核心驱动</span></div>
+      <div class="feature-row"><span class="feature-label">MLT = 8.3h</span><div class="feature-fill f2" style="width:144px;"></div><span class="feature-value">18% 时间动态</span></div>
+      <div class="feature-row"><span class="feature-label">Dst = -85nT</span><div class="feature-fill f3" style="width:120px;"></div><span class="feature-value">15% 磁暴扰动</span></div>
+      <div class="feature-row"><span class="feature-label">AL = -450nT</span><div class="feature-fill f4" style="width:96px;"></div><span class="feature-value">12% 亚暴活动</span></div>
+      <div class="feature-row"><span class="feature-label">N = 8.5 cm<sup>-3</sup></span><div class="feature-fill" style="width:64px;background:var(--text-dim);"></div><span class="feature-value">8% 太阳风密度</span></div>
+      <div class="feature-row"><span class="feature-label">V = 480 km/s</span><div class="feature-fill" style="width:56px;background:var(--text-dim);"></div><span class="feature-value">7% 太阳风速度</span></div>
+      <div class="feature-row"><span class="feature-label">时滞特征 (滚动均值)</span><div class="feature-fill" style="width:64px;background:var(--text-dim);"></div><span class="feature-value">8% 历史趋势</span></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-dim);text-align:center;">
+      置信度: <span class="confidence-tag ct-high">HIGH</span> (R=0.89, 外辐射带核心区)
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      风险等级: <span style="color:var(--orange);">橙色</span> — 建议关注辐射暴露窗口期
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">深化方案三：能力边界声明模板</div>
+    <div class="boundary-box">
+      <div class="boundary-row"><span class="bd-icon bd-high">✓</span> 40-287 keV @ 90°投掷角, L=3-6 → 高置信度<span class="confidence-tag ct-high">R&gt;0.89</span></div>
+      <div class="boundary-row"><span class="bd-icon bd-mid">✓</span> 612 keV @ 90°投掷角, L=3-5 → 中置信度<span class="confidence-tag ct-mid">R=0.82</span></div>
+      <div class="boundary-row"><span class="bd-icon bd-low">△</span> 612 keV @ 0°投掷角, L&gt;5.5 → 低置信度<span class="confidence-tag ct-low">R&lt;0.2</span><span style="font-size:12px;color:var(--text-dim);"> 需物理模型辅助</span></div>
+      <div class="boundary-row"><span class="bd-icon bd-low">△</span> 磁暴急始期 (Dst骤降&lt;2h) → 精度下降7%<span class="confidence-tag ct-mid" style="margin-left:8px;">建议人工复核</span></div>
+      <div class="boundary-row"><span class="bd-icon bd-na">✗</span> 极区/南大西洋异常区 → 未覆盖<span style="font-size:12px;color:var(--text-dim);margin-left:6px;">需扩展数据源</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">对标岗位能力</div>
+    <table>
+      <thead><tr><th>岗位要求</th><th>本方向的体现</th></tr></thead>
+      <tbody>
+        <tr><td>结构化表达</td><td>把学术指标翻译为客户/决策者能理解的语言</td></tr>
+        <tr><td>跨团队推进</td><td>不同受众看到不同层面的解释，降低沟通成本</td></tr>
+        <tr><td>产品方案设计</td><td>能力边界声明本身就是产品边界定义</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">简历话术</div>
+    <div class="highlight">
+      构建面向多角色的可信AI决策解释框架：基于消融实验数据（L-shell贡献32%、MLT贡献18%、Dst贡献15%）设计特征贡献可视化，将学术指标翻译为业务语言（"空间位置参数是核心决策依据"而非"R下降15%"）；建立能力边界声明模板（40-287keV@90°高置信度、612keV@0°需物理模型辅助），为PoC验收和客户沟通提供明确预期管理，支持卫星调度员、保险精算师、空间物理专家、监管机构四类受众的差异化解码需求。
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
